@@ -5,6 +5,7 @@ module.exports = function(game, opts) {
 };
 
 function PumpkinPlugin(game, opts) {
+  this.game = game;
   this.registry = game.plugins.get('voxel-registry');
   if (!this.registry) throw new Error('voxel-pumpkin requires voxel-registry plugin');
 
@@ -13,16 +14,18 @@ function PumpkinPlugin(game, opts) {
     //'carvedNorthLit', 'carvedEastLit', 'carvedSouthLit', 'carvedWestLit',
     ];
 
+  this.side2state = {north: 1, south: 2, west: 3, east: 4};
+
   this.textures = [
     ['pumpkin_top', 'pumpkin_side'],
     // back, front, top, bottom, left, right
-    ['pumpkin_side', 'pumpkin_face_off', 'pumpkin_top', 'pumpkin_top', 'pumpkin_side', 'pumpkin_side'],
     ['pumpkin_face_off', 'pumpkin_side', 'pumpkin_top', 'pumpkin_top', 'pumpkin_side', 'pumpkin_side'],
-    ['pumpkin_side', 'pumpkin_side', 'pumpkin_top', 'pumpkin_top', 'pumpkin_side', 'pumpkin_face_off'],
+    ['pumpkin_side', 'pumpkin_face_off', 'pumpkin_top', 'pumpkin_top', 'pumpkin_side', 'pumpkin_side'],
     ['pumpkin_side', 'pumpkin_side', 'pumpkin_top', 'pumpkin_top', 'pumpkin_face_off', 'pumpkin_side'],
+    ['pumpkin_side', 'pumpkin_side', 'pumpkin_top', 'pumpkin_top', 'pumpkin_side', 'pumpkin_face_off'],
 
     /* TODO: support objects in voxel-registry
-    {top:'pumpkin_top', bottom:'pumpkin_top', front:'pumpkin_face_off', back:'pumpkin_side', left:'pumpkin_side', right:'pumpkin_side'}, // TODO: confirm directions
+    {top:'pumpkin_top', bottom:'pumpkin_top', front:'pumpkin_face_off', back:'pumpkin_side', left:'pumpkin_side', right:'pumpkin_side'},
     {top:'pumpkin_top', bottom:'pumpkin_top', front:'pumpkin_side', back:'pumpkin_face_off', left:'pumpkin_side', right:'pumpkin_side'},
     {top:'pumpkin_top', bottom:'pumpkin_top', front:'pumpkin_side', back:'pumpkin_side', left:'pumpkin_face_off', right:'pumpkin_side'},
     {top:'pumpkin_top', bottom:'pumpkin_top', front:'pumpkin_side', back:'pumpkin_side', left:'pumpkin_side', right:'pumpkin_face_off'},
@@ -68,6 +71,33 @@ PumpkinPlugin.prototype.enable = function() {
 PumpkinPlugin.prototype.disable = function() {
 };
 
-PumpkinPlugin.prototype.useShears = function(target) {
-  console.log('used shears on',target);
+PumpkinPlugin.prototype.useShears = function(held,target) {
+  console.log('used shears on',held,target);
+
+  if (!target) return;
+
+  // TODO: refactor into voxel-registry and/or voxel-use
+
+  var blockIndex = this.game.getBlock(target.voxel);
+  var blockName = this.registry.getBlockName(blockIndex);
+
+  var baseBlockIndex = this.registry.getProp(blockName, 'baseIndex');
+  if (!baseBlockIndex) return;
+  var baseBlockName = this.registry.getBlockName(baseBlockIndex);
+
+  if (baseBlockName !== 'pumpkinuncarved') return; // TODO: caps
+
+  var metadata = blockIndex - baseBlockIndex;
+  console.log('meta',metadata, this.states[metadata]);
+
+  if (this.states[metadata] !== 'uncarved') return;
+
+  var newMetadata = this.side2state[target.side];
+  console.log('newMetadata',newMetadata);
+  if (newMetadata === undefined) return;
+
+  var newBlockIndex = newMetadata + blockIndex;
+
+  this.game.setBlock(target.voxel, newBlockIndex);
+  // TODO: shears durability
 };
