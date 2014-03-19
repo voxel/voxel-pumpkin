@@ -51,7 +51,9 @@ PumpkinPlugin.prototype.enable = function() {
   var self = this;
 
   this.registry.registerBlocks('pumpkin', this.states.length, {
-    names: this.states,
+    names: this.states.map(function(state) { 
+             return 'pumpkin' + state; // TODO: ucfirst?
+           }),
     texture: function(offset) { 
       return self.textures[offset] || self.textures[0];
     },
