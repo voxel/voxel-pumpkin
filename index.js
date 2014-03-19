@@ -59,8 +59,13 @@ PumpkinPlugin.prototype.enable = function() {
       return self.displayNames[offset] || 'Pumpkin '+offset;
     },
   });
+  
+  this.registry.registerItem('shears', {itemTexture: 'items/shears', toolClass: 'shears', onUse: this.useShears.bind(this)});
 };
 
 PumpkinPlugin.prototype.disable = function() {
 };
 
+PumpkinPlugin.prototype.useShears = function(target) {
+  console.log('used shears on',target);
+};
