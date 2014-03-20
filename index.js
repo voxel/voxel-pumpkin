@@ -1,5 +1,7 @@
 'use strict';
 
+var ucfirst = require('ucfirst');
+
 module.exports = function(game, opts) {
   return new PumpkinPlugin(game, opts);
 };
@@ -55,7 +57,7 @@ PumpkinPlugin.prototype.enable = function() {
 
   this.registry.registerBlocks('pumpkin', this.states.length, {
     names: this.states.map(function(state) { 
-             return 'pumpkin' + state; // TODO: ucfirst?
+             return 'pumpkin' + ucfirst(state);
            }),
     texture: function(offset) { 
       return self.textures[offset] || self.textures[0];
@@ -85,7 +87,7 @@ PumpkinPlugin.prototype.useShears = function(held,target) {
   if (!baseBlockIndex) return;
   var baseBlockName = this.registry.getBlockName(baseBlockIndex);
 
-  if (baseBlockName !== 'pumpkinuncarved') return; // TODO: caps
+  if (baseBlockName !== 'pumpkinUncarved') return; // TODO: caps
 
   var metadata = blockIndex - baseBlockIndex;
   console.log('meta',metadata, this.states[metadata]);
