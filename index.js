@@ -8,6 +8,10 @@ module.exports = function(game, opts) {
 
 function PumpkinPlugin(game, opts) {
   this.game = game;
+  // allow changing carved face after carving it once? (default: only let carve once)
+  this.allowRecarving = typeof opts.allowRecarving !== 'undefined' ? opts.allowRecarving : false;
+
+
   this.registry = game.plugins.get('voxel-registry');
   if (!this.registry) throw new Error('voxel-pumpkin requires voxel-registry plugin');
 
@@ -79,8 +83,6 @@ PumpkinPlugin.prototype.useShears = function(held,target) {
 
   if (!target) return;
 
-  // TODO: refactor into voxel-registry and/or voxel-use
-
   var blockIndex = this.game.getBlock(target.voxel);
 
   if (this.registry.getBlockBaseName(blockIndex) !== 'pumpkin') {
@@ -92,17 +94,15 @@ PumpkinPlugin.prototype.useShears = function(held,target) {
 
   console.log('meta',meta, this.states[meta]);
 
-  if (this.states[meta] !== 'uncarved') {
-    // only uncarved pumpkins can be carved
+  if (this.states[meta] !== 'uncarved' && !this.allowRecarving) {
+    // only uncarved pumpkins can be carved (by default)
     return;
   }
 
-  var newMetadata = this.side2state[target.side];
-  console.log('newMetadata',newMetadata);
-  if (newMetadata === undefined) return;
+  var newMeta = this.side2state[target.side];
+  console.log('newMeta',newMeta);
+  if (newMeta === undefined) return;
 
-  var newBlockIndex = newMetadata + blockIndex;
-
-  this.game.setBlock(target.voxel, newBlockIndex);
+  this.game.setBlock(target.voxel, this.registry.changeBlockMeta(blockIndex, newMeta));
   // TODO: shears durability
 };
