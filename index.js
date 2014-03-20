@@ -57,6 +57,7 @@ PumpkinPlugin.prototype.enable = function() {
 
   this.registry.registerBlocks('pumpkin', this.states.length, {
     names: this.states.map(function(state) { 
+             if (state === 'uncarved') return 'pumpkin';
              return 'pumpkin' + ucfirst(state);
            }),
     texture: function(offset) { 
@@ -87,7 +88,7 @@ PumpkinPlugin.prototype.useShears = function(held,target) {
   if (!baseBlockIndex) return;
   var baseBlockName = this.registry.getBlockName(baseBlockIndex);
 
-  if (baseBlockName !== 'pumpkinUncarved') return; // TODO: caps
+  if (baseBlockName !== 'pumpkin') return;
 
   var metadata = blockIndex - baseBlockIndex;
   console.log('meta',metadata, this.states[metadata]);
