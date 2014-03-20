@@ -82,18 +82,20 @@ PumpkinPlugin.prototype.useShears = function(held,target) {
   // TODO: refactor into voxel-registry and/or voxel-use
 
   var blockIndex = this.game.getBlock(target.voxel);
-  var blockName = this.registry.getBlockName(blockIndex);
 
-  var baseBlockIndex = this.registry.getProp(blockName, 'baseIndex');
-  if (!baseBlockIndex) return;
-  var baseBlockName = this.registry.getBlockName(baseBlockIndex);
+  if (this.registry.getBlockBaseName(blockIndex) !== 'pumpkin') {
+    // not a pumpkin of any type!
+    return;
+  }
 
-  if (baseBlockName !== 'pumpkin') return;
+  var meta = this.registry.getBlockMeta(blockIndex);
 
-  var metadata = blockIndex - baseBlockIndex;
-  console.log('meta',metadata, this.states[metadata]);
+  console.log('meta',meta, this.states[meta]);
 
-  if (this.states[metadata] !== 'uncarved') return;
+  if (this.states[meta] !== 'uncarved') {
+    // only uncarved pumpkins can be carved
+    return;
+  }
 
   var newMetadata = this.side2state[target.side];
   console.log('newMetadata',newMetadata);
