@@ -15,12 +15,17 @@ face (hit detection from [voxel-use](https://github.com/deathcap/voxel-use)). By
 pumpkins can only be carved once, but the `allowRecarving` option can be set to allow
 shears to change the carved side even if it has already been carved once.
 
+You can also "light up" or extinguish pumpkins by right-clicking with a lighter;
+this turns a carved pumpkin into a jack-o'-lantern or vice versa.
+
 For another example of block metadata, see also [voxel-wool](https://github.com/deathcap/voxel-wool).
 
 Note: the above screenshot uses the [ProgrammerArt](https://github.com/deathcap/ProgrammerArt) v2.0
-texture pack, but other packs can be used; for example, using Minecraft (not included):
+texture pack, but other packs can be used; for example, here are some pumpkins
+including a jack-o'-lantern and carved pumpkin
+using the [Sphax](http://bdcraft.net/) 64x texture pack (not included):
 
-![screenshot](http://i.imgur.com/6RJKOXt.png "Screenshot")
+![screenshot](http://i.imgur.com/kPXHIhT.png "Screenshot")
 
 ## License
 

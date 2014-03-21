@@ -17,10 +17,14 @@ function PumpkinPlugin(game, opts) {
 
   this.states = ['uncarved',
     'carvedNorth', 'carvedSouth', 'carvedWest', 'carvedEast',
-    //'carvedNorthLit', 'carvedEastLit', 'carvedSouthLit', 'carvedWestLit',
+    'carvedNorthLit', 'carvedEastLit', 'carvedSouthLit', 'carvedWestLit',
     ];
 
+  // states correspond to array indices of this.state TODO: cleanup
   this.side2state = {north: 1, south: 2, west: 3, east: 4};
+  this.toggleLit = {1:5, 2:6, 3:7, 4:8, // light up
+    5:1, 6:2, 7:3, 8:4}; // extinguish
+
 
   this.textures = [
     ['pumpkin_top', 'pumpkin_side'],
@@ -29,6 +33,12 @@ function PumpkinPlugin(game, opts) {
     ['pumpkin_side', 'pumpkin_face_off', 'pumpkin_top', 'pumpkin_top', 'pumpkin_side', 'pumpkin_side'],
     ['pumpkin_side', 'pumpkin_side', 'pumpkin_top', 'pumpkin_top', 'pumpkin_face_off', 'pumpkin_side'],
     ['pumpkin_side', 'pumpkin_side', 'pumpkin_top', 'pumpkin_top', 'pumpkin_side', 'pumpkin_face_off'],
+
+    // lit
+    ['pumpkin_face_on', 'pumpkin_side', 'pumpkin_top', 'pumpkin_top', 'pumpkin_side', 'pumpkin_side'],
+    ['pumpkin_side', 'pumpkin_face_on', 'pumpkin_top', 'pumpkin_top', 'pumpkin_side', 'pumpkin_side'],
+    ['pumpkin_side', 'pumpkin_side', 'pumpkin_top', 'pumpkin_top', 'pumpkin_face_on', 'pumpkin_side'],
+    ['pumpkin_side', 'pumpkin_side', 'pumpkin_top', 'pumpkin_top', 'pumpkin_side', 'pumpkin_face_on'],
 
     /* TODO: support objects in voxel-registry
     {top:'pumpkin_top', bottom:'pumpkin_top', front:'pumpkin_face_off', back:'pumpkin_side', left:'pumpkin_side', right:'pumpkin_side'},
@@ -44,6 +54,10 @@ function PumpkinPlugin(game, opts) {
     'Pumpkin Carved South',
     'Pumpkin Carved East',
     'Pumpkin Carved West',
+    'Jack-o\'-Lantern North',
+    'Jack-o\'-Lantern South',
+    'Jack-o\'-Lantern East',
+    'Jack-o\'-Lantern West',
     ];
 
 
@@ -71,14 +85,16 @@ PumpkinPlugin.prototype.enable = function() {
       return self.displayNames[offset] || 'Pumpkin '+offset;
     },
   });
-  
+
+  // TODO: move to separate modules? shearable, flammable..
   this.registry.registerItem('shears', {itemTexture: 'items/shears', toolClass: 'shears', onUse: this.useShears.bind(this)});
+  this.registry.registerItem('lighter', {itemTexture: 'items/flint_and_steel', toolClass: 'lighter', onUse: this.useLighter.bind(this)});
 };
 
 PumpkinPlugin.prototype.disable = function() {
 };
 
-PumpkinPlugin.prototype.useShears = function(held,target) {
+PumpkinPlugin.prototype.useShears = function(held, target) {
   console.log('used shears on',held,target);
 
   if (!target) return;
@@ -96,6 +112,7 @@ PumpkinPlugin.prototype.useShears = function(held,target) {
 
   if (this.states[meta] !== 'uncarved' && !this.allowRecarving) {
     // only uncarved pumpkins can be carved (by default)
+    // TODO: fix recarving jack-o'-lanterns?
     return;
   }
 
@@ -106,3 +123,24 @@ PumpkinPlugin.prototype.useShears = function(held,target) {
   this.game.setBlock(target.voxel, this.registry.changeBlockMeta(blockIndex, newMeta));
   // TODO: shears durability
 };
+
+PumpkinPlugin.prototype.useLighter = function(held, target) {
+  if (!target) return;
+
+  var blockIndex = this.game.getBlock(target.voxel);
+
+  if (this.registry.getBlockBaseName(blockIndex) !== 'pumpkin') {
+    // TODO: support lighting other blocks on fire
+    return;
+  }
+
+  var meta = this.registry.getBlockMeta(blockIndex);
+
+  var newMeta = this.toggleLit[meta];
+  if (newMeta === undefined) return;
+
+  this.game.setBlock(target.voxel, this.registry.changeBlockMeta(blockIndex, newMeta));
+  // TODO: lighter durability
+};
+
+
