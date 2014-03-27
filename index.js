@@ -69,12 +69,6 @@ function PumpkinPlugin(game, opts) {
     ];
 
 
-  // pumpkin_face_off.png           pumpkin_side.png               
-  // pumpkin_face_on.png            pumpkin_top.png        
-  
-  // TODO: shears to carve on given face
-  // TODO: flint/steel to light/extinguish
-
   this.enable();
 };
 
@@ -99,11 +93,9 @@ PumpkinPlugin.prototype.enable = function() {
   this.registry.registerItem('shears', {itemTexture: 'items/shears', toolClass: 'shears', onUse: this.useShears.bind(this)});
 
   if (this.recipes) {
-    // TODO: 2x2 recipe after https://github.com/deathcap/craftingrecipes/issues/2
     this.recipes.registerPositional([
-        [undefined, 'ingotIron', undefined],
-        ['ingotIron', undefined, undefined],
-        [undefined, undefined, undefined]
+        [undefined, 'ingotIron'],
+        ['ingotIron', undefined],
         ], ['shears']);
   }
 
