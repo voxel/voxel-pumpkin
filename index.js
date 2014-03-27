@@ -8,8 +8,8 @@ module.exports = function(game, opts) {
 
 function PumpkinPlugin(game, opts) {
   this.game = game;
-  // allow changing carved face after carving it once? (default: only let carve once)
-  this.allowRecarving = typeof opts.allowRecarving !== 'undefined' ? opts.allowRecarving : false;
+  // allow changing carved face after carving it once? (reorienting)
+  this.allowRecarving = typeof opts.allowRecarving !== 'undefined' ? opts.allowRecarving : true;
 
 
   this.registry = game.plugins.get('voxel-registry');
@@ -21,9 +21,12 @@ function PumpkinPlugin(game, opts) {
     ];
 
   // states correspond to array indices of this.state TODO: cleanup
-  this.side2state = {north: 1, south: 2, west: 3, east: 4};
+  this.side2state = {unlit:{north: 1, south: 2, west: 3, east: 4},
+                    lit:{north: 5, south: 6, west: 7, east: 8}};
   this.toggleLit = {1:5, 2:6, 3:7, 4:8, // light up
     5:1, 6:2, 7:3, 8:4}; // extinguish
+  this.stateIsLit = {0:false, 1:false, 2:false, 3:false, 4:false,
+    5:true, 6:true, 7:true, 8:true};
 
 
   this.textures = [
@@ -84,6 +87,7 @@ PumpkinPlugin.prototype.enable = function() {
     displayName: function(offset) {
       return self.displayNames[offset] || 'Pumpkin '+offset;
     },
+    creativeTab: 'plants'
   });
 
   // TODO: move to separate modules? shearable, flammable..
@@ -116,7 +120,9 @@ PumpkinPlugin.prototype.useShears = function(held, target) {
     return;
   }
 
-  var newMeta = this.side2state[target.side];
+  var isLit = this.stateIsLit[meta];
+
+  var newMeta = this.side2state[isLit ? 'lit' : 'unlit'][target.side];
   console.log('newMeta',newMeta);
   if (newMeta === undefined) return;
 
