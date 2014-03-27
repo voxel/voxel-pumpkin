@@ -6,6 +6,10 @@ module.exports = function(game, opts) {
   return new PumpkinPlugin(game, opts);
 };
 
+module.exports.pluginInfo = {
+  loadAfter: ['voxel-registry', 'voxel-recipes']
+};
+
 function PumpkinPlugin(game, opts) {
   this.game = game;
   // allow changing carved face after carving it once? (reorienting)
@@ -14,6 +18,7 @@ function PumpkinPlugin(game, opts) {
 
   this.registry = game.plugins.get('voxel-registry');
   if (!this.registry) throw new Error('voxel-pumpkin requires voxel-registry plugin');
+  this.recipes = game.plugins.get('voxel-recipes'); // optional
 
   this.states = ['uncarved',
     'carvedNorth', 'carvedSouth', 'carvedWest', 'carvedEast',
@@ -92,6 +97,16 @@ PumpkinPlugin.prototype.enable = function() {
 
   // TODO: move to separate modules? shearable, flammable..
   this.registry.registerItem('shears', {itemTexture: 'items/shears', toolClass: 'shears', onUse: this.useShears.bind(this)});
+
+  if (this.recipes) {
+    // TODO: 2x2 recipe after https://github.com/deathcap/craftingrecipes/issues/2
+    this.recipes.registerPositional([
+        [undefined, 'ingotIron', undefined],
+        ['ingotIron', undefined, undefined],
+        [undefined, undefined, undefined]
+        ], ['shears']);
+  }
+
   this.registry.registerItem('lighter', {itemTexture: 'items/flint_and_steel', toolClass: 'lighter', onUse: this.useLighter.bind(this)});
 };
 
