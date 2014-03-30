@@ -101,7 +101,8 @@ PumpkinPlugin.prototype.enable = function() {
     onUse: function(held, target) {
       self.use.useBlock(target, new ItemPile('pumpkinNatural'));
       return true; // consume held item
-    }
+    },
+    creativeTab: 'plants'
   });
   this.registry.registerItem('pumpkinCarved', {
     itemTexture: this.textures[2], // unlit item always facing right
@@ -109,7 +110,8 @@ PumpkinPlugin.prototype.enable = function() {
     onUse: function(held, target) {
       self.use.useBlock(target, new ItemPile('pumpkinCarved' + ucfirst(self.facingPlayer())));
       return true;
-    }
+    },
+    creativeTab: 'plants'
   });
   this.registry.registerItem('jackolantern', {
     itemTexture: this.textures[6],
@@ -117,7 +119,8 @@ PumpkinPlugin.prototype.enable = function() {
     onUse: function(held, target) {
       self.use.useBlock(target, new ItemPile('pumpkinCarved' + ucfirst(self.facingPlayer()) + 'Lit'));
       return true;
-    }
+    },
+    creativeTab: 'plants'
   });
 
 
@@ -132,7 +135,7 @@ PumpkinPlugin.prototype.enable = function() {
     displayName: function(offset) {
       return self.displayNames[offset] || 'Pumpkin '+offset;
     },
-    creativeTab: 'plants',
+    creativeTab: false, // hide blocks - the items above are meant to be user-visible instead
     itemDrop: function(offset) {
       if (self.states[offset] === 'natural') {
         return 'pumpkin';
