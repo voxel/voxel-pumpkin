@@ -1,13 +1,14 @@
 'use strict';
 
 var ucfirst = require('ucfirst');
+var ItemPile = require('itempile');
 
 module.exports = function(game, opts) {
   return new PumpkinPlugin(game, opts);
 };
 
 module.exports.pluginInfo = {
-  loadAfter: ['voxel-registry', 'voxel-recipes']
+  loadAfter: ['voxel-registry', 'voxel-recipes', 'voxel-use']
 };
 
 function PumpkinPlugin(game, opts) {
@@ -18,6 +19,8 @@ function PumpkinPlugin(game, opts) {
 
   this.registry = game.plugins.get('voxel-registry');
   if (!this.registry) throw new Error('voxel-pumpkin requires voxel-registry plugin');
+  this.use = game.plugins.get('voxel-use');
+  if (!this.use) throw new Error('voxel-pumpkin requires voxel-use plugin');
   this.recipes = game.plugins.get('voxel-recipes'); // optional
 
   this.states = ['uncarved',
@@ -75,7 +78,16 @@ function PumpkinPlugin(game, opts) {
 PumpkinPlugin.prototype.enable = function() {
   var self = this;
 
-  this.registry.registerItem('pumpkin', {itemTexture: this.textures[0]}); // TODO: on use, place
+  this.registry.registerItem('pumpkin', {
+    itemTexture: this.textures[0],
+    onUse: function(held, target) {
+      // place a block
+      var toPlace = new ItemPile('pumpkinUncarved');
+      self.use.useBlock(target, toPlace);
+
+      return true; // consume held item
+    }
+  })
   //this.registry.registerItem('pumpkinCarved', {itemTexture: this.textures[2]});
 
   this.registry.registerBlocks('pumpkin', this.states.length, {
