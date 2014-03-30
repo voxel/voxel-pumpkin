@@ -23,7 +23,7 @@ function PumpkinPlugin(game, opts) {
   if (!this.use) throw new Error('voxel-pumpkin requires voxel-use plugin');
   this.recipes = game.plugins.get('voxel-recipes'); // optional
 
-  this.states = ['uncarved',
+  this.states = ['natural',
     'carvedNorth', 'carvedSouth', 'carvedWest', 'carvedEast',
     'carvedNorthLit', 'carvedEastLit', 'carvedSouthLit', 'carvedWestLit',
     ];
@@ -82,7 +82,7 @@ PumpkinPlugin.prototype.enable = function() {
     itemTexture: this.textures[0],
     onUse: function(held, target) {
       // place a block
-      var toPlace = new ItemPile('pumpkinUncarved');
+      var toPlace = new ItemPile('pumpkinNatural');
       self.use.useBlock(target, toPlace);
 
       return true; // consume held item
@@ -126,7 +126,7 @@ PumpkinPlugin.prototype.useShears = function(held, target) {
 
   var blockIndex = this.game.getBlock(target.voxel);
 
-  if (this.registry.getBlockBaseName(blockIndex) !== 'pumpkin') {
+  if (this.registry.getBlockBaseName(blockIndex) !== 'pumpkinNatural') {
     // not a pumpkin of any type!
     return;
   }
@@ -135,9 +135,8 @@ PumpkinPlugin.prototype.useShears = function(held, target) {
 
   console.log('meta',meta, this.states[meta]);
 
-  if (this.states[meta] !== 'uncarved' && !this.allowRecarving) {
-    // only uncarved pumpkins can be carved (by default)
-    // TODO: fix recarving jack-o'-lanterns?
+  if (this.states[meta] !== 'natural' && !this.allowRecarving) {
+    // only uncarved pumpkins can be carved if !this.allowRecarving
     return;
   }
 
@@ -156,7 +155,7 @@ PumpkinPlugin.prototype.useLighter = function(held, target) {
 
   var blockIndex = this.game.getBlock(target.voxel);
 
-  if (this.registry.getBlockBaseName(blockIndex) !== 'pumpkin') {
+  if (this.registry.getBlockBaseName(blockIndex) !== 'pumpkinNatural') { // note: base block; includes all meta
     // TODO: support lighting other blocks on fire
     return;
   }
