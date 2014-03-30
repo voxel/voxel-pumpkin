@@ -87,8 +87,31 @@ PumpkinPlugin.prototype.enable = function() {
 
       return true; // consume held item
     }
-  })
-  //this.registry.registerItem('pumpkinCarved', {itemTexture: this.textures[2]});
+  });
+  this.registry.registerItem('pumpkinCarved', {
+    itemTexture: this.textures[2],
+    onUse: function(held, target) {
+
+      // place face facing player
+      var heading = Math.atan2(self.game.cameraVector()[0], self.game.cameraVector()[2]);
+      var dir;
+      if (Math.abs(heading) <= Math.PI / 4) { // 0 +/- 45 degrees
+        dir = 'north';
+      } else if (Math.PI - Math.abs(heading) <= Math.PI / 4) { // +/-180 +/- 45
+        dir = 'south';
+      } else if (heading > 0) { // +90 +/- 45
+        dir = 'west';
+      } else if (heading <= 0) { // -90 +/- 45
+        dir = 'east';
+      }
+
+      var toPlace = new ItemPile('pumpkinCarved' + ucfirst(dir));
+
+      self.use.useBlock(target, toPlace);
+
+      return true;
+    }
+  });
 
   this.registry.registerBlocks('pumpkin', this.states.length, {
     names: this.states.map(function(state) { 
