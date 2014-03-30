@@ -57,7 +57,7 @@ function PumpkinPlugin(game, opts) {
   ];
 
   this.displayNames = [
-    'Pumpkin',
+    'Pumpkin Natural',
     'Pumpkin Carved North',
     'Pumpkin Carved South',
     'Pumpkin Carved East',
@@ -75,9 +75,11 @@ function PumpkinPlugin(game, opts) {
 PumpkinPlugin.prototype.enable = function() {
   var self = this;
 
+  this.registry.registerItem('pumpkin', {itemTexture: this.textures[0]}); // TODO: on use, place
+  //this.registry.registerItem('pumpkinCarved', {itemTexture: this.textures[2]});
+
   this.registry.registerBlocks('pumpkin', this.states.length, {
     names: this.states.map(function(state) { 
-             if (state === 'uncarved') return 'pumpkin';
              return 'pumpkin' + ucfirst(state);
            }),
     texture: function(offset) { 
