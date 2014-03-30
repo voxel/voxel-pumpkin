@@ -67,8 +67,8 @@ function PumpkinPlugin(game, opts) {
     'Pumpkin Carved West',
     'Jack-o\'-Lantern North',
     'Jack-o\'-Lantern South',
-    'Jack-o\'-Lantern East',
     'Jack-o\'-Lantern West',
+    'Jack-o\'-Lantern East',
     ];
 
 
