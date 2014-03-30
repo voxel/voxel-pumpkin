@@ -18,7 +18,13 @@ shears to change the carved side even if it has already been carved once.
 You can also "light up" or extinguish pumpkins by right-clicking with a lighter;
 this turns a carved pumpkin into a jack-o'-lantern or vice versa.
 
-For another example of block metadata, see also [voxel-wool](https://github.com/deathcap/voxel-wool).
+When a block is mined, it drops (using [voxel-harvest](https://github.com/deathcap/voxel-harvest))
+an item which has no direction, unlike the blocks. Using this item by right-clicking in the world
+(with [voxel-use](https://github.com/deathcap/voxel-use)) places a block with an appropriate
+direction such that the carved side faces the player. In this way, blocks can be picked up
+as items and reoriented by the player.
+
+For another, simpler, example of block metadata, see also [voxel-wool](https://github.com/deathcap/voxel-wool).
 
 Note: the above screenshot uses the [ProgrammerArt](https://github.com/deathcap/ProgrammerArt) v2.0
 texture pack, but other packs can be used; for example, here are some pumpkins

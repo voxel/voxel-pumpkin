@@ -23,9 +23,11 @@ function PumpkinPlugin(game, opts) {
   if (!this.use) throw new Error('voxel-pumpkin requires voxel-use plugin');
   this.recipes = game.plugins.get('voxel-recipes'); // optional
 
+  // block states, textures, names
+
   this.states = ['natural',
     'carvedNorth', 'carvedSouth', 'carvedWest', 'carvedEast',
-    'carvedNorthLit', 'carvedEastLit', 'carvedSouthLit', 'carvedWestLit',
+    'carvedNorthLit', 'carvedSouthLit', 'carvedWestLit', 'carvedEastLit',
     ];
 
   // states correspond to array indices of this.state TODO: cleanup
@@ -60,7 +62,7 @@ function PumpkinPlugin(game, opts) {
   ];
 
   this.displayNames = [
-    'Pumpkin Natural',
+    'Pumpkin',
     'Pumpkin Carved North',
     'Pumpkin Carved South',
     'Pumpkin Carved East',
@@ -75,44 +77,51 @@ function PumpkinPlugin(game, opts) {
   this.enable();
 };
 
+// get a direction for a face facing towards the player, XZ plane
+PumpkinPlugin.prototype.facingPlayer = function() {
+  var heading = Math.atan2(self.game.cameraVector()[0], self.game.cameraVector()[2]);
+  var dir;
+  if (Math.abs(heading) <= Math.PI / 4) { // 0 +/- 45 degrees
+    return 'north';
+  } else if (Math.PI - Math.abs(heading) <= Math.PI / 4) { // +/-180 +/- 45
+    return 'south';
+  } else if (heading > 0) { // +90 +/- 45
+    return 'west';
+  } else { // if (heading <= 0) { // -90 +/- 45
+    return 'east';
+  }
+};
+
 PumpkinPlugin.prototype.enable = function() {
   var self = this;
 
+  // items that place blocks with player-facing orientation
   this.registry.registerItem('pumpkin', {
     itemTexture: this.textures[0],
     onUse: function(held, target) {
-      // place a block
-      var toPlace = new ItemPile('pumpkinNatural');
-      self.use.useBlock(target, toPlace);
-
+      self.use.useBlock(target, new ItemPile('pumpkinNatural'));
       return true; // consume held item
     }
   });
   this.registry.registerItem('pumpkinCarved', {
-    itemTexture: this.textures[2],
+    itemTexture: this.textures[2], // unlit item always facing right
+    displayName: 'Carved Pumpkin',
     onUse: function(held, target) {
-
-      // place face facing player
-      var heading = Math.atan2(self.game.cameraVector()[0], self.game.cameraVector()[2]);
-      var dir;
-      if (Math.abs(heading) <= Math.PI / 4) { // 0 +/- 45 degrees
-        dir = 'north';
-      } else if (Math.PI - Math.abs(heading) <= Math.PI / 4) { // +/-180 +/- 45
-        dir = 'south';
-      } else if (heading > 0) { // +90 +/- 45
-        dir = 'west';
-      } else if (heading <= 0) { // -90 +/- 45
-        dir = 'east';
-      }
-
-      var toPlace = new ItemPile('pumpkinCarved' + ucfirst(dir));
-
-      self.use.useBlock(target, toPlace);
-
+      self.use.useBlock(target, new ItemPile('pumpkinCarved' + ucfirst(self.facingPlayer())));
+      return true;
+    }
+  });
+  this.registry.registerItem('jackolantern', {
+    itemTexture: this.textures[6],
+    displayName: 'Jack-o\'-Lantern',
+    onUse: function(held, target) {
+      self.use.useBlock(target, new ItemPile('pumpkinCarved' + ucfirst(self.facingPlayer()) + 'Lit'));
       return true;
     }
   });
 
+
+  // blocks for voxels in the world
   this.registry.registerBlocks('pumpkin', this.states.length, {
     names: this.states.map(function(state) { 
              return 'pumpkin' + ucfirst(state);
@@ -123,7 +132,15 @@ PumpkinPlugin.prototype.enable = function() {
     displayName: function(offset) {
       return self.displayNames[offset] || 'Pumpkin '+offset;
     },
-    creativeTab: 'plants'
+    creativeTab: 'plants',
+    itemDrop: function(offset) {
+      if (self.states[offset] === 'natural') {
+        return 'pumpkin';
+      }
+      // drop a non-directional item, instead of our directional block itself -- the
+      // item places a block in the correct orientation (based on player heading)
+      return self.stateIsLit[offset] ? 'jackolantern' : 'pumpkinCarved';
+    },
   });
 
   // TODO: move to separate modules? shearable, flammable..
