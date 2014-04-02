@@ -99,8 +99,9 @@ PumpkinPlugin.prototype.enable = function() {
   this.registry.registerItem('pumpkin', {
     itemTexture: this.textures[0],
     onUse: function(held, target) {
-      self.use.useBlock(target, new ItemPile('pumpkinNatural'));
-      return true; // consume held item
+      // act as if the block was used, returning true if it was consumed so the item
+      // will be consumed too, otherwise false (if not place, placement blocked)
+      return self.use.useBlock(target, new ItemPile('pumpkinNatural')) === undefined;
     },
     creativeTab: 'plants'
   });
@@ -108,8 +109,7 @@ PumpkinPlugin.prototype.enable = function() {
     itemTexture: this.textures[2], // unlit item always facing right
     displayName: 'Carved Pumpkin',
     onUse: function(held, target) {
-      self.use.useBlock(target, new ItemPile('pumpkinCarved' + ucfirst(self.facingPlayer())));
-      return true;
+      return self.use.useBlock(target, new ItemPile('pumpkinCarved' + ucfirst(self.facingPlayer()))) === undefined;
     },
     creativeTab: 'plants'
   });
@@ -117,8 +117,7 @@ PumpkinPlugin.prototype.enable = function() {
     itemTexture: this.textures[6],
     displayName: 'Jack-o\'-Lantern',
     onUse: function(held, target) {
-      self.use.useBlock(target, new ItemPile('pumpkinCarved' + ucfirst(self.facingPlayer()) + 'Lit'));
-      return true;
+      return self.use.useBlock(target, new ItemPile('pumpkinCarved' + ucfirst(self.facingPlayer()) + 'Lit')) === undefined;
     },
     creativeTab: 'plants'
   });
