@@ -42,23 +42,16 @@ function PumpkinPlugin(game, opts) {
   this.textures = [
     ['pumpkin_top', 'pumpkin_side'],
     // back, front, top, bottom, left, right
-    ['pumpkin_face_off', 'pumpkin_side', 'pumpkin_top', 'pumpkin_top', 'pumpkin_side', 'pumpkin_side'],
-    ['pumpkin_side', 'pumpkin_face_off', 'pumpkin_top', 'pumpkin_top', 'pumpkin_side', 'pumpkin_side'],
-    ['pumpkin_side', 'pumpkin_side', 'pumpkin_top', 'pumpkin_top', 'pumpkin_face_off', 'pumpkin_side'],
-    ['pumpkin_side', 'pumpkin_side', 'pumpkin_top', 'pumpkin_top', 'pumpkin_side', 'pumpkin_face_off'],
+    {back:'pumpkin_face_off', front:'pumpkin_side', top:'pumpkin_top', bottom:'pumpkin_top', left:'pumpkin_side', right:'pumpkin_side'},
+    {back:'pumpkin_side', front:'pumpkin_face_off', top:'pumpkin_top', bottom:'pumpkin_top', left:'pumpkin_side', right:'pumpkin_side'},
+    {back:'pumpkin_side', front:'pumpkin_side', top:'pumpkin_top', bottom:'pumpkin_top', left:'pumpkin_face_off', right:'pumpkin_side'},
+    {back:'pumpkin_side', front:'pumpkin_side', top:'pumpkin_top', bottom:'pumpkin_top', left:'pumpkin_side', right:'pumpkin_face_off'},
 
     // lit
-    ['pumpkin_face_on', 'pumpkin_side', 'pumpkin_top', 'pumpkin_top', 'pumpkin_side', 'pumpkin_side'],
-    ['pumpkin_side', 'pumpkin_face_on', 'pumpkin_top', 'pumpkin_top', 'pumpkin_side', 'pumpkin_side'],
-    ['pumpkin_side', 'pumpkin_side', 'pumpkin_top', 'pumpkin_top', 'pumpkin_face_on', 'pumpkin_side'],
-    ['pumpkin_side', 'pumpkin_side', 'pumpkin_top', 'pumpkin_top', 'pumpkin_side', 'pumpkin_face_on'],
-
-    /* TODO: support objects in voxel-registry
-    {top:'pumpkin_top', bottom:'pumpkin_top', front:'pumpkin_face_off', back:'pumpkin_side', left:'pumpkin_side', right:'pumpkin_side'},
-    {top:'pumpkin_top', bottom:'pumpkin_top', front:'pumpkin_side', back:'pumpkin_face_off', left:'pumpkin_side', right:'pumpkin_side'},
-    {top:'pumpkin_top', bottom:'pumpkin_top', front:'pumpkin_side', back:'pumpkin_side', left:'pumpkin_face_off', right:'pumpkin_side'},
-    {top:'pumpkin_top', bottom:'pumpkin_top', front:'pumpkin_side', back:'pumpkin_side', left:'pumpkin_side', right:'pumpkin_face_off'},
-    */
+    {back:'pumpkin_face_on', front:'pumpkin_side', top:'pumpkin_top', bottom:'pumpkin_top', left:'pumpkin_side', right:'pumpkin_side'},
+    {back:'pumpkin_side', front:'pumpkin_face_on', top:'pumpkin_top', bottom:'pumpkin_top', left:'pumpkin_side', right:'pumpkin_side'},
+    {back:'pumpkin_side', front:'pumpkin_side', top:'pumpkin_top', bottom:'pumpkin_top', left:'pumpkin_face_on', right:'pumpkin_side'},
+    {back:'pumpkin_side', front:'pumpkin_side', top:'pumpkin_top', bottom:'pumpkin_top', left:'pumpkin_side', right:'pumpkin_face_on'},
   ];
 
   this.displayNames = [
