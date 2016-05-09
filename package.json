@@ -1,7 +1,7 @@
 {
   "name": "voxel-pumpkin",
   "description": "carvable pumpkin blocks (voxel.js plugin)",
-  "version": "0.1.3",
+  "version": "1.0.0",
   "main": "pumpkin.js",
   "repository": {
     "type": "git",
