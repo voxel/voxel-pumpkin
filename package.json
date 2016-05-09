@@ -12,7 +12,7 @@
   ],
   "dependencies": {
     "ucfirst": "0.0.1",
-    "itempile": "^1.0.1"
+    "itempile": "^2.0.0"
   },
   "peerDependencies": {},
   "license": "MIT"
